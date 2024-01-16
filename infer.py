@@ -3,7 +3,7 @@ import torch
 import numpy as np
 from model import Model
 from dataset import Dataset
-from test import test
+from test import test_single_video
 import option
 import time
 
@@ -19,8 +19,8 @@ if __name__ == '__main__':
     model = model.to(device)
     model_dict = model.load_state_dict(
         {k.replace('module.', ''): v for k, v in torch.load('ckpt/wsanodet_mix2.pkl').items()})
-    gt = np.load(args.gt)
     st = time.time()
-    pr_auc, pr_auc_online = test(test_loader, model, device, gt)
-    print('Time:{}'.format(time.time()-st))
-    print('offline pr_auc:{0:.4}; online pr_auc:{1:.4}\n'.format(pr_auc, pr_auc_online))
+    message, message_frames  = test_single_video(test_loader, model, device)
+    time_elapsed = time.time() - st
+    print(' {}. {} \n'.format( message, message_frames))
+    print('Test complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
