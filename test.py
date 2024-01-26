@@ -40,26 +40,27 @@ def test_single_video(dataloader, model, device):
     with torch.no_grad():
         model.eval()
         pred = torch.zeros(0).to(device)
-        pred2 = torch.zeros(0).to(device)
+        # pred2 = torch.zeros(0).to(device)
         for i, input in enumerate(dataloader):
             input = input.to(device)
             logits, logits2 = model(inputs=input, seq_len=None)
             logits = torch.squeeze(logits)
             sig = torch.sigmoid(logits)
-            sig = torch.mean(sig, 0)
+            if sig.dim() > 1: # 5-crop
+                sig = torch.mean(sig, 0)
             pred = torch.cat((pred, sig))
             '''
             online detection
             '''
-            logits2 = torch.squeeze(logits2)
-            sig2 = torch.sigmoid(logits2)
-            sig2 = torch.mean(sig2, 0)
+            # logits2 = torch.squeeze(logits2)
+            # sig2 = torch.sigmoid(logits2)
+            # sig2 = torch.mean(sig2, 0)
 
-            sig2 = torch.unsqueeze(sig2, 1) ##for audio
-            pred2 = torch.cat((pred2, sig2))
+            # sig2 = torch.unsqueeze(sig2, 1) ##for audio
+            # pred2 = torch.cat((pred2, sig2))
 
         pred = list(pred.cpu().detach().numpy())
-        pred2 = list(pred2.cpu().detach().numpy())
+        # pred2 = list(pred2.cpu().detach().numpy())
         pred_binary = [1 if pred_value > 0.45 else 0 for pred_value in pred]
         # pred_binary2 = [1 if pred_value[0] > 0.5 else 0 for pred_value in pred2]
         if any(pred == 1 for pred in pred_binary):
