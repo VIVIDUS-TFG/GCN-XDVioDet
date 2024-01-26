@@ -61,30 +61,45 @@ class Dataset(data.Dataset):
             features2 = np.array(np.load(self.flow_list[index].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0]:
                 features = np.concatenate((features1, features2),axis=1)
-            else:# because the frames of flow is one less than that of rgb
-                features = np.concatenate((features1[:-1], features2), axis=1)
+            else:
+                min_length = min(features1.shape[0], features2.shape[0])
+                features1 = features1[:min_length, :]
+                features2 = features2[:min_length, :]
+                features = np.concatenate((features1, features2),axis=1)
         elif self.modality == 'MIX2':
             features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
             features2 = np.array(np.load(self.audio_list[index//5].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0]:
                 features = np.concatenate((features1, features2),axis=1)
-            else:# because the frames of flow is one less than that of rgb
-                features = np.concatenate((features1[:-1], features2), axis=1)
+            else:
+                min_length = min(features1.shape[0], features2.shape[0])
+                features1 = features1[:min_length, :]
+                features2 = features2[:min_length, :]
+                features = np.concatenate((features1, features2),axis=1)
+
         elif self.modality == 'MIX3':
             features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
             features2 = np.array(np.load(self.audio_list[index//5].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0]:
                 features = np.concatenate((features1, features2),axis=1)
-            else:# because the frames of flow is one less than that of rgb
-                features = np.concatenate((features1[:-1], features2), axis=1)
+            else:
+                min_length = min(features1.shape[0], features2.shape[0])
+                features1 = features1[:min_length, :]
+                features2 = features2[:min_length, :]
+                features = np.concatenate((features1, features2),axis=1)
+
         elif self.modality == 'MIX_ALL':
             features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
             features2 = np.array(np.load(self.flow_list[index].strip('\n')), dtype=np.float32)
             features3 = np.array(np.load(self.audio_list[index//5].strip('\n')), dtype=np.float32)
-            if features1.shape[0] == features2.shape[0]:
+            if features1.shape[0] == features2.shape[0] and features1.shape[0] == features3.shape[0]:
                 features = np.concatenate((features1, features2, features3),axis=1)
-            else:# because the frames of flow is one less than that of rgb
-                features = np.concatenate((features1[:-1], features2, features3[:-1]), axis=1)
+            else:
+                min_length = min(features1.shape[0], features2.shape[0], features3.shape[0])
+                features1 = features1[:min_length, :]
+                features2 = features2[:min_length, :]
+                features3 = features3[:min_length, :]
+                features = np.concatenate((features1, features2, features3),axis=1)
         else:
             assert 1>2, 'Modality is wrong!'
         if self.tranform is not None:
