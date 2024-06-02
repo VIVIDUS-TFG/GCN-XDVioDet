@@ -20,7 +20,7 @@ if __name__ == '__main__':
     model_dict = model.load_state_dict(
         {k.replace('module.', ''): v for k, v in torch.load('ckpt/wsanodet_mix2.pkl').items()})
     st = time.time()
-    message, message_second, message_frames  =  test_single_video(test_loader, model, device)
+    message, message_second, message_frames  =  test_single_video(test_loader, model, device, args)
     time_elapsed = time.time() - st
     print(message + message_frames)
     print(message + message_second)
