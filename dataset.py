@@ -68,7 +68,7 @@ class Dataset(data.Dataset):
                 features = np.concatenate((features1, features2),axis=1)
         elif self.modality == 'MIX2':
             features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
-            features2 = np.array(np.load(self.audio_list[index//5].strip('\n')), dtype=np.float32)
+            features2 = np.array(np.load(self.audio_list[index].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0]:
                 features = np.concatenate((features1, features2),axis=1)
             else:
@@ -79,7 +79,7 @@ class Dataset(data.Dataset):
 
         elif self.modality == 'MIX3':
             features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
-            features2 = np.array(np.load(self.audio_list[index//5].strip('\n')), dtype=np.float32)
+            features2 = np.array(np.load(self.audio_list[index].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0]:
                 features = np.concatenate((features1, features2),axis=1)
             else:
@@ -91,7 +91,7 @@ class Dataset(data.Dataset):
         elif self.modality == 'MIX_ALL':
             features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
             features2 = np.array(np.load(self.flow_list[index].strip('\n')), dtype=np.float32)
-            features3 = np.array(np.load(self.audio_list[index//5].strip('\n')), dtype=np.float32)
+            features3 = np.array(np.load(self.audio_list[index].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0] and features1.shape[0] == features3.shape[0]:
                 features = np.concatenate((features1, features2, features3),axis=1)
             else:

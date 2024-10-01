@@ -28,7 +28,7 @@ if __name__ == '__main__':
                               batch_size=args.batch_size, shuffle=True,
                               num_workers=args.workers, pin_memory=True)
     test_loader = DataLoader(Dataset(args, test_mode=True),
-                              batch_size=5, shuffle=False,
+                              batch_size=1, shuffle=False,
                               num_workers=args.workers, pin_memory=True)
 
 
