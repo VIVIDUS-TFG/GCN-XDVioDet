@@ -3,14 +3,15 @@ import numpy as np
 
 from utils import process_feat
 
+
 class Dataset(data.Dataset):
     def __init__(self, args, transform=None, test_mode=False):
         self.modality = args.modality
 
         if test_mode:
-            self.rgb_list_file = args.test_rgb_list
-            self.flow_list_file = args.test_flow_list
-            self.audio_list_file = args.test_audio_list
+            self.rgb_list_file = args.rgb_list
+            self.flow_list_file = args.flow_list
+            self.audio_list_file = args.audio_list
         else:
             self.rgb_list_file = args.rgb_list
             self.flow_list_file = args.flow_list
@@ -51,57 +52,72 @@ class Dataset(data.Dataset):
             label = 1.0
 
         if self.modality == 'AUDIO':
-            features = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
+            features = np.array(
+                np.load(self.list[index].strip('\n')), dtype=np.float32)
         elif self.modality == 'RGB':
-            features = np.array(np.load(self.list[index].strip('\n')),dtype=np.float32)
+            features = np.array(
+                np.load(self.list[index].strip('\n')), dtype=np.float32)
         elif self.modality == 'FLOW':
-            features = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
+            features = np.array(
+                np.load(self.list[index].strip('\n')), dtype=np.float32)
         elif self.modality == 'MIX':
-            features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
-            features2 = np.array(np.load(self.flow_list[index].strip('\n')), dtype=np.float32)
+            features1 = np.array(
+                np.load(self.list[index].strip('\n')), dtype=np.float32)
+            features2 = np.array(
+                np.load(self.flow_list[index].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0]:
-                features = np.concatenate((features1, features2),axis=1)
+                features = np.concatenate((features1, features2), axis=1)
             else:
                 min_length = min(features1.shape[0], features2.shape[0])
                 features1 = features1[:min_length, :]
                 features2 = features2[:min_length, :]
-                features = np.concatenate((features1, features2),axis=1)
+                features = np.concatenate((features1, features2), axis=1)
         elif self.modality == 'MIX2':
-            features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
-            features2 = np.array(np.load(self.audio_list[index].strip('\n')), dtype=np.float32)
+            features1 = np.array(
+                np.load(self.list[index].strip('\n')), dtype=np.float32)
+            features2 = np.array(
+                np.load(self.audio_list[index].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0]:
-                features = np.concatenate((features1, features2),axis=1)
+                features = np.concatenate((features1, features2), axis=1)
             else:
                 min_length = min(features1.shape[0], features2.shape[0])
                 features1 = features1[:min_length, :]
                 features2 = features2[:min_length, :]
-                features = np.concatenate((features1, features2),axis=1)
+                features = np.concatenate((features1, features2), axis=1)
 
         elif self.modality == 'MIX3':
-            features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
-            features2 = np.array(np.load(self.audio_list[index].strip('\n')), dtype=np.float32)
+            features1 = np.array(
+                np.load(self.list[index].strip('\n')), dtype=np.float32)
+            features2 = np.array(
+                np.load(self.audio_list[index].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0]:
-                features = np.concatenate((features1, features2),axis=1)
+                features = np.concatenate((features1, features2), axis=1)
             else:
                 min_length = min(features1.shape[0], features2.shape[0])
                 features1 = features1[:min_length, :]
                 features2 = features2[:min_length, :]
-                features = np.concatenate((features1, features2),axis=1)
+                features = np.concatenate((features1, features2), axis=1)
 
         elif self.modality == 'MIX_ALL':
-            features1 = np.array(np.load(self.list[index].strip('\n')), dtype=np.float32)
-            features2 = np.array(np.load(self.flow_list[index].strip('\n')), dtype=np.float32)
-            features3 = np.array(np.load(self.audio_list[index].strip('\n')), dtype=np.float32)
+            features1 = np.array(
+                np.load(self.list[index].strip('\n')), dtype=np.float32)
+            features2 = np.array(
+                np.load(self.flow_list[index].strip('\n')), dtype=np.float32)
+            features3 = np.array(
+                np.load(self.audio_list[index].strip('\n')), dtype=np.float32)
             if features1.shape[0] == features2.shape[0] and features1.shape[0] == features3.shape[0]:
-                features = np.concatenate((features1, features2, features3),axis=1)
+                features = np.concatenate(
+                    (features1, features2, features3), axis=1)
             else:
-                min_length = min(features1.shape[0], features2.shape[0], features3.shape[0])
+                min_length = min(
+                    features1.shape[0], features2.shape[0], features3.shape[0])
                 features1 = features1[:min_length, :]
                 features2 = features2[:min_length, :]
                 features3 = features3[:min_length, :]
-                features = np.concatenate((features1, features2, features3),axis=1)
+                features = np.concatenate(
+                    (features1, features2, features3), axis=1)
         else:
-            assert 1>2, 'Modality is wrong!'
+            assert 1 > 2, 'Modality is wrong!'
         if self.tranform is not None:
             features = self.tranform(features)
         if self.test_mode:
